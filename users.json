@@ -1,1 +1,20 @@
-[{ "id": "cust1", "username": "customer", "password": "password", "cart": [] }]
+[
+  {
+    "type": "customer",
+    "id": "cust1",
+    "username": "customer",
+    "password": "password",
+    "cart": {
+      "items": []
+    }
+  },
+  {
+    "type": "seller",
+    "id": "sell1",
+    "username": "seller",
+    "password": "password",
+    "inventory": {
+      "products": []
+    }
+  }
+]
