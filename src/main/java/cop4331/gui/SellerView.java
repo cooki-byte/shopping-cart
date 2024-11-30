@@ -1,37 +1,156 @@
 package cop4331.gui;
 
+import cop4331.client.Product;
+import cop4331.client.Seller;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
- * GUI class representing the seller view.
- * Displays a simple message to confirm the view is loaded.
+ * GUI class representing the seller view in the system.
+ * Provides functionality for sellers to view and manage their inventory, 
+ * add new products, and access financial data.
  */
-public class SellerView extends JFrame{
-    private JLabel messageLabel;
+public class SellerView extends JFrame {
+    /** The seller using this view. */
+    private Seller seller;
+
+    /** Text area for displaying the seller's inventory. */
+    private JTextArea inventoryDisplay;
+
+    /** Text field for entering the name of a new product. */
+    private JTextField productNameField;
+
+    /** Text field for entering the price of a new product. */
+    private JTextField productPriceField;
+
+    /** Text field for entering the quantity of a new product. */
+    private JTextField productQuantityField;
+
+    /** Button for adding a new product to the inventory. */
+    private JButton addProductButton;
+
+    /** Button for viewing financial data (currently not implemented). */
+    private JButton viewFinancialButton;
 
     /**
-     * Constructs the SellerView.
-     * Initializes the GUI components.
+     * Constructs the seller view with the specified seller.
      *
-     * @param seller the Seller object associated with this view
+     * @param seller the seller using this view.
      */
-    public SellerView(cop4331.client.Seller seller) {
-        setTitle("Seller View");
-        setSize(400, 200);
+    public SellerView(Seller seller) {
+        this.seller = seller;
+        setTitle("Seller View - " + seller.getUsername());
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        initializeComponents();
-        setLocationRelativeTo(null); // Centers the window on the screen
+        setLayout(new BorderLayout());
+
+        // Inventory Display
+        inventoryDisplay = new JTextArea();
+        inventoryDisplay.setEditable(false);
+        JScrollPane inventoryScroll = new JScrollPane(inventoryDisplay);
+        inventoryScroll.setBorder(BorderFactory.createTitledBorder("Your Inventory"));
+        add(inventoryScroll, BorderLayout.CENTER);
+
+        // Bottom Panel
+        JPanel bottomPanel = new JPanel(new GridLayout(4, 2, 5, 5));
+        bottomPanel.add(new JLabel("Product Name:"));
+        productNameField = new JTextField();
+        bottomPanel.add(productNameField);
+
+        bottomPanel.add(new JLabel("Price:"));
+        productPriceField = new JTextField();
+        bottomPanel.add(productPriceField);
+
+        bottomPanel.add(new JLabel("Quantity:"));
+        productQuantityField = new JTextField();
+        bottomPanel.add(productQuantityField);
+
+        addProductButton = new JButton("Add Product");
+        viewFinancialButton = new JButton("View Financial Data");
+        bottomPanel.add(addProductButton);
+        bottomPanel.add(viewFinancialButton);
+
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        setLocationRelativeTo(null);
+
+        // Add action listener to addProductButton
+        addProductButton.addActionListener(e -> {
+            try {
+                String name = getProductName();
+                double price = getProductPrice();
+                int quantity = getProductQuantity();
+
+                if (name.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Product name cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (price <= 0) {
+                    JOptionPane.showMessageDialog(this, "Price must be greater than 0!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (quantity <= 0) {
+                    JOptionPane.showMessageDialog(this, "Quantity must be greater than 0!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String productId = String.valueOf(System.currentTimeMillis());
+                Product product = new Product(productId, name, name + " description", price, quantity);
+                seller.addProduct(product);
+                updateInventoryDisplay();
+
+                productNameField.setText("");
+                productPriceField.setText("");
+                productQuantityField.setText("");
+
+                JOptionPane.showMessageDialog(this, "Product added successfully!");
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid input! Please ensure price and quantity are numbers.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     /**
-     * Initializes the GUI components and layout.
+     * Retrieves the product name entered by the seller.
+     *
+     * @return the entered product name.
      */
-    private void initializeComponents() {
-        messageLabel = new JLabel("This is Seller View", SwingConstants.CENTER);
-        messageLabel.setFont(new Font("Arial", Font.PLAIN, 24));
-        add(messageLabel);
+    public String getProductName() {
+        return productNameField.getText();
     }
 
-    // Add other methods and components
+    /**
+     * Retrieves the product price entered by the seller.
+     *
+     * @return the entered product price.
+     * @throws NumberFormatException if the entered price is not a valid double.
+     */
+    public double getProductPrice() {
+        return Double.parseDouble(productPriceField.getText());
+    }
+
+    /**
+     * Retrieves the product quantity entered by the seller.
+     *
+     * @return the entered product quantity.
+     * @throws NumberFormatException if the entered quantity is not a valid integer.
+     */
+    public int getProductQuantity() {
+        return Integer.parseInt(productQuantityField.getText());
+    }
+
+    /**
+     * Updates the inventory display to reflect the current products in the seller's inventory.
+     */
+    public void updateInventoryDisplay() {
+        List<Product> products = seller.getInventory().getProducts();
+        inventoryDisplay.setText("");
+        for (Product product : products) {
+            inventoryDisplay.append(product.getName() + " - $" + product.getPrice() +
+                    " (Stock: " + product.getQuantity() + ")\n");
+        }
+    }
 }

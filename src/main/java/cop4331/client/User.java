@@ -3,36 +3,41 @@ package cop4331.client;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+/**
+ * Abstract base class representing a user in the system.
+ * A user can be a {@link Customer} or a {@link Seller}, with unique credentials.
+ * Provides common properties and methods for all user types.
+ */
 @JsonTypeInfo(
-   use = JsonTypeInfo.Id.NAME,
-   include = JsonTypeInfo.As.PROPERTY,
-   property = "type"
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
 )
 @JsonSubTypes({
-   @JsonSubTypes.Type(value = Customer.class, name = "customer"),
-   @JsonSubTypes.Type(value = Seller.class, name = "seller")
+    @JsonSubTypes.Type(value = Customer.class, name = "customer"),
+    @JsonSubTypes.Type(value = Seller.class, name = "seller")
 })
-
-/**
- * Abstract class representing a user in the system.
- * Implemented by Customer and Seller classes.
- */
 public abstract class User {
+    /** The unique identifier for the user. */
     protected String id;
+
+    /** The username for the user. */
     protected String username;
+
+    /** The password for the user. */
     protected String password;
 
     /**
-     * Default constructor for Jackson deserialization.
+     * Default constructor required for Jackson deserialization.
      */
     public User() {}
 
     /**
-     * Constructs a User with specified id, username, and password.
+     * Constructs a user with the specified ID, username, and password.
      *
-     * @param id the user ID
-     * @param username the username
-     * @param password the password
+     * @param id the unique identifier for the user.
+     * @param username the username for the user.
+     * @param password the password for the user.
      */
     public User(String id, String username, String password) {
         this.id = id;
@@ -41,72 +46,73 @@ public abstract class User {
     }
 
     /**
-     * Authenticates the user with the provided password.
+     * Authenticates the user by comparing the provided password with the stored password.
      *
-     * @param password the password to authenticate
-     * @return true if authentication is successful, false otherwise
+     * @param password the password to authenticate.
+     * @return true if the provided password matches the stored password, false otherwise.
      */
-    public abstract boolean login(String password);
+    public boolean login(String password) {
+        return this.password.equals(password);
+    }
 
     /**
-     * Logs out the user from the system.
+     * Logs out the user and displays a logout message.
      */
-    public abstract void logout();
-
-
-    // Getters and Setters
+    public void logout() {
+        System.out.println(username + " logged out.");
+    }
 
     /**
-     * Returns the user ID.
+     * Retrieves the unique identifier for the user.
      *
-     * @return the user ID
+     * @return the user ID.
      */
-    public String getId(){
+    public String getId() {
         return id;
     }
 
     /**
-     * Sets the user ID.
+     * Sets the unique identifier for the user.
      *
-     * @param id the user ID
+     * @param id the user ID to set.
      */
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * Returns the username.
+     * Retrieves the username for the user.
      *
-     * @return the username
+     * @return the username.
      */
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 
     /**
-     * Sets the username.
+     * Sets the username for the user.
      *
-     * @param username the username
+     * @param username the username to set.
      */
-    public void setUsername(String username){
+    public void setUsername(String username) {
         this.username = username;
     }
 
     /**
-     * Returns the password.
+     * Retrieves the password for the user.
      *
-     * @return the password
+     * @return the password.
      */
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
     /**
-     * Sets the password.
+     * Sets the password for the user.
      *
-     * @param password the password
+     * @param password the password to set.
      */
-    public void setPassword(String password){
+    public void setPassword(String password) {
         this.password = password;
     }
 }
