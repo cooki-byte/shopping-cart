@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * Abstract class representing a user in the system.
  * Implemented by Customer and Seller classes.
  */
+
 public abstract class User {
     protected String id;
     protected String username;
