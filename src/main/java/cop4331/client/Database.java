@@ -3,6 +3,8 @@ package cop4331.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,8 @@ public class Database {
 
     /**
      * Loads users and products data from JSON files.
-     * Initializes the lists if files do not exist.
+     * 
+     * @throws FileNotFoundException if files do not exist
      */
     public void loadData() {
         try {
@@ -53,17 +56,8 @@ public class Database {
             if (usersFile.exists()) {
                 users = objectMapper.readValue(usersFile, new TypeReference<List<User>>() {});
             } else {
-                // Initialize with default users
-                users = new ArrayList<>();
-                // Create a default customer
-                Customer defaultCustomer = new Customer("cust1", "customer", "password");
-                users.add(defaultCustomer);
-                // Create a default seller
-                Inventory inventory = new Inventory(); // Empty inventory
-                Seller defaultSeller = new Seller("sell1", "seller", "password", inventory);
-                users.add(defaultSeller);
-                // Save the initial data
-                saveData();
+                // Throw exception if file not found
+                throw new FileNotFoundException("Users file not found: " + USERS_FILE);
             }
 
             // Load products
@@ -71,11 +65,13 @@ public class Database {
             // if (productsFile.exists()) {
             //     products = objectMapper.readValue(productsFile, new TypeReference<List<Product>>() {});
             // } else {
-            //     products = new ArrayList<>();
+            //     // Throw an exception if the file is not found
+            //      throw new FileNotFoundException("Products file not found: " + PRODUCTS_FILE);
             // }
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Add exception handling
+        } catch (IOException e){
+            // Log the exception and exit program
+            System.err.println("Critical error: " + e.getMessage());
+            System.exit(1);
         }
     }
 
