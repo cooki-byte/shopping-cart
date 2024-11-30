@@ -2,6 +2,10 @@ package cop4331.client;
 
 import java.util.List;
 import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true) // Prevent total from being serialized
 
 /**
  * The Cart class represents a shopping cart that contains line items and notifies observers of changes.
@@ -63,6 +67,7 @@ public class Cart {
      * 
      * @return the total cost
      */
+    @JsonIgnore
     public double getTotal() {
         return items.stream()
                     .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
