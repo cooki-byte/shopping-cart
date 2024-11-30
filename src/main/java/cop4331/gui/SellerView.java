@@ -85,7 +85,7 @@ public class SellerView extends JFrame {
                 }
 
                 String productId = String.valueOf(System.currentTimeMillis());
-                Product product = new Product(productId, name, name + " description", price, quantity);
+                Product product = new Product(productId, name, name + " description", price, quantity, seller);
                 seller.addProduct(product);
                 updateInventoryDisplay();
 

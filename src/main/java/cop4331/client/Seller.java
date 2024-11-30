@@ -70,10 +70,22 @@ public class Seller extends User {
      * @param product the product to add to the inventory.
      */
     public void addProduct(Product product) {
+        product.setSeller(this); // Set the seller reference
         inventory.addProduct(product);
         // Update financial data with the cost of the product
         financialData.updateData(0, product.getPrice() * product.getQuantity());
         System.out.println("Product added to inventory: " + product.getName());
+    }
+
+    /**
+     * Records a sale of a product and updates the financial data.
+     *
+     * @param product the product sold
+     * @param quantity the quantity sold
+     */
+    public void recordSale(Product product, int quantity) {
+        double saleAmount = product.getPrice() * quantity;
+        financialData.updateData(saleAmount, 0); // Update revenue
     }
 
     /**
@@ -109,6 +121,6 @@ public class Seller extends User {
      */
     @Override
     public void logout() {
-        System.out.println("Seller " + username + " logged out.");
+        System.out.println("Seller logged out.");
     }
 }

@@ -19,6 +19,9 @@ public class Product {
     /** The quantity of the product available in stock. */
     private int quantity;
 
+    /** The seller of the product. */
+    private Seller seller;
+
     /**
      * Default constructor for creating an empty product.
      */
@@ -32,13 +35,15 @@ public class Product {
      * @param description a brief description of the product.
      * @param price the price of the product.
      * @param quantity the quantity of the product available in stock.
+     * @param seller the seller of the product.
      */
-    public Product(String id, String name, String description, double price, int quantity) {
+    public Product(String id, String name, String description, double price, int quantity, Seller seller) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
+        this.seller = seller;
     }
 
     /**
@@ -132,24 +137,20 @@ public class Product {
     }
 
     /**
-     * Reduces the available quantity of the product.
+     * Retrieves the seller of the product.
      *
-     * @param amount the amount to reduce.
-     * @throws IllegalArgumentException if the amount is greater than the available quantity.
+     * @return the seller of the product.
      */
-    public void reduceQuantity(int amount) {
-        if (amount > this.quantity) {
-            throw new IllegalArgumentException("Not enough stock available.");
-        }
-        this.quantity -= amount;
+    public Seller getSeller() {
+        return seller;
     }
 
     /**
-     * Increases the available quantity of the product.
+     * Sets the seller of the product.
      *
-     * @param amount the amount to add.
+     * @param seller the seller to set.
      */
-    public void increaseQuantity(int amount) {
-        this.quantity += amount;
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 }
