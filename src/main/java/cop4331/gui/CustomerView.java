@@ -8,16 +8,41 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * GUI class representing the customer view in the system.
+ * Provides functionality for customers to browse products, add items to their cart, 
+ * view their cart, and proceed to checkout.
+ */
 public class CustomerView extends JFrame {
+    /** The customer using this view. */
     private Customer customer;
+
+    /** Text area for displaying available products. */
     private JTextArea productDisplay;
+
+    /** Text area for displaying items in the customer's cart. */
     private JTextArea cartDisplay;
+
+    /** Text field for entering the ID of the product to add to the cart. */
     private JTextField productIdField;
+
+    /** Text field for entering the quantity of the product to add to the cart. */
     private JTextField quantityField;
+
+    /** Button for adding a product to the cart. */
     private JButton addToCartButton;
+
+    /** Button for proceeding to checkout. */
     private JButton checkoutButton;
+
+    /** Button displaying the cart icon with the total number of items in the cart. */
     private JButton cartIcon;
 
+    /**
+     * Constructs the customer view with the specified customer.
+     *
+     * @param customer the customer using this view.
+     */
     public CustomerView(Customer customer) {
         this.customer = customer;
         setTitle("Customer View - " + customer.getUsername());
@@ -112,6 +137,11 @@ public class CustomerView extends JFrame {
         });
     }
 
+    /**
+     * Updates the product display with the available products.
+     *
+     * @param products the list of products to display.
+     */
     public void updateProductDisplay(List<Product> products) {
         productDisplay.setText("");
         for (Product product : products) {
@@ -120,12 +150,18 @@ public class CustomerView extends JFrame {
         }
     }
 
+    /**
+     * Updates the cart display with the items currently in the customer's cart.
+     */
     public void updateCartDisplay() {
         cartDisplay.setText("");
         customer.getCart().getItems().forEach(item -> cartDisplay.append(
                 item.getProduct().getName() + " x " + item.getQuantity() + "\n"));
     }
 
+    /**
+     * Updates the cart icon to display the total number of items in the customer's cart.
+     */
     public void updateCartIcon() {
         int itemCount = customer.getCart().getItems().stream()
                 .mapToInt(item -> item.getQuantity())
@@ -133,10 +169,21 @@ public class CustomerView extends JFrame {
         cartIcon.setText("Cart (" + itemCount + ")");
     }
 
+    /**
+     * Retrieves the product ID entered by the customer.
+     *
+     * @return the entered product ID.
+     */
     public String getProductId() {
         return productIdField.getText();
     }
 
+    /**
+     * Retrieves the quantity of the product entered by the customer.
+     *
+     * @return the entered quantity.
+     * @throws NumberFormatException if the entered quantity is not a valid integer.
+     */
     public int getQuantity() {
         return Integer.parseInt(quantityField.getText());
     }

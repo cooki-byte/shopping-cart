@@ -7,15 +7,38 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * GUI class representing the seller view in the system.
+ * Provides functionality for sellers to view and manage their inventory, 
+ * add new products, and access financial data.
+ */
 public class SellerView extends JFrame {
+    /** The seller using this view. */
     private Seller seller;
+
+    /** Text area for displaying the seller's inventory. */
     private JTextArea inventoryDisplay;
+
+    /** Text field for entering the name of a new product. */
     private JTextField productNameField;
+
+    /** Text field for entering the price of a new product. */
     private JTextField productPriceField;
+
+    /** Text field for entering the quantity of a new product. */
     private JTextField productQuantityField;
+
+    /** Button for adding a new product to the inventory. */
     private JButton addProductButton;
+
+    /** Button for viewing financial data (currently not implemented). */
     private JButton viewFinancialButton;
 
+    /**
+     * Constructs the seller view with the specified seller.
+     *
+     * @param seller the seller using this view.
+     */
     public SellerView(Seller seller) {
         this.seller = seller;
         setTitle("Seller View - " + seller.getUsername());
@@ -90,18 +113,38 @@ public class SellerView extends JFrame {
         });
     }
 
+    /**
+     * Retrieves the product name entered by the seller.
+     *
+     * @return the entered product name.
+     */
     public String getProductName() {
         return productNameField.getText();
     }
 
+    /**
+     * Retrieves the product price entered by the seller.
+     *
+     * @return the entered product price.
+     * @throws NumberFormatException if the entered price is not a valid double.
+     */
     public double getProductPrice() {
         return Double.parseDouble(productPriceField.getText());
     }
 
+    /**
+     * Retrieves the product quantity entered by the seller.
+     *
+     * @return the entered product quantity.
+     * @throws NumberFormatException if the entered quantity is not a valid integer.
+     */
     public int getProductQuantity() {
         return Integer.parseInt(productQuantityField.getText());
     }
 
+    /**
+     * Updates the inventory display to reflect the current products in the seller's inventory.
+     */
     public void updateInventoryDisplay() {
         List<Product> products = seller.getInventory().getProducts();
         inventoryDisplay.setText("");
