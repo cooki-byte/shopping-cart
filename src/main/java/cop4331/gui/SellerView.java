@@ -1,7 +1,7 @@
 package cop4331.gui;
 
-import cop4331.client.Seller;
 import cop4331.client.Product;
+import cop4331.client.Seller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ public class SellerView extends JFrame {
     public SellerView(Seller seller) {
         this.seller = seller;
         setTitle("Seller View - " + seller.getUsername());
-        setSize(600, 400);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -52,16 +52,42 @@ public class SellerView extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
 
         setLocationRelativeTo(null);
-    }
 
-    // Methods to update inventory display
-    public void updateInventoryDisplay() {
-        List<Product> products = seller.getInventory().getProducts();
-        inventoryDisplay.setText("");
-        for (Product product : products) {
-            inventoryDisplay.append(product.getName() + " - $" + product.getPrice() +
-                    " (Stock: " + product.getQuantity() + ")\n");
-        }
+        // Add action listener to addProductButton
+        addProductButton.addActionListener(e -> {
+            try {
+                String name = getProductName();
+                double price = getProductPrice();
+                int quantity = getProductQuantity();
+
+                if (name.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Product name cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (price <= 0) {
+                    JOptionPane.showMessageDialog(this, "Price must be greater than 0!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (quantity <= 0) {
+                    JOptionPane.showMessageDialog(this, "Quantity must be greater than 0!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String productId = String.valueOf(System.currentTimeMillis());
+                Product product = new Product(productId, name, name + " description", price, quantity);
+                seller.addProduct(product);
+                updateInventoryDisplay();
+
+                productNameField.setText("");
+                productPriceField.setText("");
+                productQuantityField.setText("");
+
+                JOptionPane.showMessageDialog(this, "Product added successfully!");
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid input! Please ensure price and quantity are numbers.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     public String getProductName() {
@@ -76,11 +102,12 @@ public class SellerView extends JFrame {
         return Integer.parseInt(productQuantityField.getText());
     }
 
-    public JButton getAddProductButton() {
-        return addProductButton;
-    }
-
-    public JButton getViewFinancialButton() {
-        return viewFinancialButton;
+    public void updateInventoryDisplay() {
+        List<Product> products = seller.getInventory().getProducts();
+        inventoryDisplay.setText("");
+        for (Product product : products) {
+            inventoryDisplay.append(product.getName() + " - $" + product.getPrice() +
+                    " (Stock: " + product.getQuantity() + ")\n");
+        }
     }
 }
