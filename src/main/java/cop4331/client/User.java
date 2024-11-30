@@ -12,102 +12,53 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
    @JsonSubTypes.Type(value = Customer.class, name = "customer"),
    @JsonSubTypes.Type(value = Seller.class, name = "seller")
 })
-
-/**
- * Abstract class representing a user in the system.
- * Implemented by Customer and Seller classes.
- */
-
 public abstract class User {
     protected String id;
     protected String username;
     protected String password;
 
-    /**
-     * Default constructor for Jackson deserialization.
-     */
+    // Default constructor for Jackson deserialization
     public User() {}
 
-    /**
-     * Constructs a User with specified id, username, and password.
-     *
-     * @param id the user ID
-     * @param username the username
-     * @param password the password
-     */
+    // Constructor with parameters
     public User(String id, String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
     }
 
-    /**
-     * Authenticates the user with the provided password.
-     *
-     * @param password the password to authenticate
-     * @return true if authentication is successful, false otherwise
-     */
-    public abstract boolean login(String password);
+    // Universal login logic
+    public boolean login(String password) {
+        return this.password.equals(password);
+    }
 
-    /**
-     * Logs out the user from the system.
-     */
-    public abstract void logout();
-
+    // Default logout logic
+    public void logout() {
+        System.out.println(username + " logged out.");
+    }
 
     // Getters and Setters
-
-    /**
-     * Returns the user ID.
-     *
-     * @return the user ID
-     */
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    /**
-     * Sets the user ID.
-     *
-     * @param id the user ID
-     */
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
-    /**
-     * Returns the username.
-     *
-     * @return the username
-     */
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 
-    /**
-     * Sets the username.
-     *
-     * @param username the username
-     */
-    public void setUsername(String username){
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    /**
-     * Returns the password.
-     *
-     * @return the password
-     */
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
-    /**
-     * Sets the password.
-     *
-     * @param password the password
-     */
-    public void setPassword(String password){
+    public void setPassword(String password) {
         this.password = password;
     }
 }

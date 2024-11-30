@@ -1,69 +1,54 @@
 package cop4331.client;
 
-/**
- * Represents a seller user in the system.
- * Sellers can manage inventory and view financial data.
- */
-public class Seller extends User{
+public class Seller extends User {
     private Inventory inventory;
 
-    /**
-     * Default constructor required for Jackson deserialization.
-     */
     public Seller() {
-        this.inventory = new Inventory();
+        this.inventory = new Inventory(); // Initialize with an empty inventory
     }
 
-    /**
-     * Constructs a Seller with specified id, username, and password.
-     * Assigns the provided Inventory to the seller.
-     *
-     * @param id the seller ID
-     * @param username the username
-     * @param password the password
-     * @param inventory the inventory managed by the seller
-     */
+    public Seller(String id, String username, String password) {
+        super(id, username, password);
+        this.inventory = new Inventory(); // Initialize with an empty inventory
+    }
+
     public Seller(String id, String username, String password, Inventory inventory) {
         super(id, username, password);
         this.inventory = inventory;
     }
 
-    /**
-     * Authenticates the seller with the provided password.
-     *
-     * @param password the password to authenticate
-     * @return true if authentication is successful, false otherwise
-     */
-    @Override
-    public boolean login(String password) {
-        return this.password.equals(password);
-    }
-
-    /**
-     * Logs out the seller from the system.
-     */
-    @Override
-    public void logout() {
-        // Perform logout operations
-    }
-
-    // Getters and Setters
-
-    /**
-     * Returns the seller's inventory.
-     *
-     * @return the inventory
-     */
+    // Get the seller's inventory
     public Inventory getInventory() {
         return inventory;
     }
 
-    /**
-     * Sets the seller's inventory.
-     *
-     * @param inventory the inventory to set
-     */
+    // Set the seller's inventory
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+    }
+
+    // Add a product to the inventory
+    public void addProduct(Product product) {
+        inventory.addProduct(product);
+        System.out.println("Product added to inventory: " + product.getName());
+    }
+
+    // Update the inventory (e.g., notify observers)
+    public void updateInventory() {
+        inventory.notifyObservers();
+        System.out.println("Inventory updated.");
+    }
+
+    // View financial data (e.g., total inventory value)
+    public void viewFinancialData() {
+        double totalValue = inventory.getProducts().stream()
+                .mapToDouble(product -> product.getPrice() * product.getQuantity())
+                .sum();
+        System.out.println("Total inventory value: $" + totalValue);
+    }
+
+    @Override
+    public void logout() {
+        System.out.println("Seller " + username + " logged out.");
     }
 }
