@@ -1,18 +1,21 @@
 package cop4331.client;
 
+import java.util.List;
+
 /**
  * Represents a seller in the system, managing an inventory of products.
  * Inherits from the {@link User} class.
  */
 public class Seller extends User {
-    /** The inventory managed by the seller. */
     private Inventory inventory;
+    private FinancialData financialData;
 
     /**
      * Default constructor that initializes the seller with an empty inventory.
      */
     public Seller() {
         this.inventory = new Inventory();
+        this.financialData = new FinancialData();
     }
 
     /**
@@ -26,6 +29,7 @@ public class Seller extends User {
     public Seller(String id, String username, String password) {
         super(id, username, password);
         this.inventory = new Inventory();
+        this.financialData = new FinancialData();
     }
 
     /**
@@ -39,6 +43,7 @@ public class Seller extends User {
     public Seller(String id, String username, String password, Inventory inventory) {
         super(id, username, password);
         this.inventory = inventory;
+        this.financialData = new FinancialData();
     }
 
     /**
@@ -66,6 +71,8 @@ public class Seller extends User {
      */
     public void addProduct(Product product) {
         inventory.addProduct(product);
+        // Update financial data with the cost of the product
+        financialData.updateData(0, product.getPrice() * product.getQuantity());
         System.out.println("Product added to inventory: " + product.getName());
     }
 
@@ -86,6 +93,15 @@ public class Seller extends User {
                 .mapToDouble(product -> product.getPrice() * product.getQuantity())
                 .sum();
         System.out.println("Total inventory value: $" + totalValue);
+    }
+
+    /**
+     * Gets the seller's financial data.
+     * 
+     * @return the seller's financial data
+     */
+    public FinancialData getFinancialData() {
+        return financialData;
     }
 
     /**

@@ -2,6 +2,7 @@ package cop4331.gui;
 
 import cop4331.client.Product;
 import cop4331.client.Seller;
+import cop4331.client.FinancialData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,25 +14,12 @@ import java.util.List;
  * add new products, and access financial data.
  */
 public class SellerView extends JFrame {
-    /** The seller using this view. */
     private Seller seller;
-
-    /** Text area for displaying the seller's inventory. */
     private JTextArea inventoryDisplay;
-
-    /** Text field for entering the name of a new product. */
     private JTextField productNameField;
-
-    /** Text field for entering the price of a new product. */
     private JTextField productPriceField;
-
-    /** Text field for entering the quantity of a new product. */
     private JTextField productQuantityField;
-
-    /** Button for adding a new product to the inventory. */
     private JButton addProductButton;
-
-    /** Button for viewing financial data (currently not implemented). */
     private JButton viewFinancialButton;
 
     /**
@@ -111,6 +99,26 @@ public class SellerView extends JFrame {
                 JOptionPane.showMessageDialog(this, "Invalid input! Please ensure price and quantity are numbers.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+
+        // Add action listener to viewFinancialButton
+        viewFinancialButton.addActionListener(e -> {
+            FinancialData financialData = seller.getFinancialData();
+            String message = String.format("Costs: $%.2f\nRevenues: $%.2f\nProfits: $%.2f",
+                    financialData.getCosts(), financialData.getRevenues(), financialData.getProfits());
+            JOptionPane.showMessageDialog(this, message, "Financial Data", JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
+
+    /**
+     * Updates the inventory display to reflect the current products in the seller's inventory.
+     */
+    public void updateInventoryDisplay() {
+        List<Product> products = seller.getInventory().getProducts();
+        inventoryDisplay.setText("");
+        for (Product product : products) {
+            inventoryDisplay.append(product.getName() + " - $" + product.getPrice() +
+                    " (Stock: " + product.getQuantity() + ")\n");
+        }
     }
 
     /**
@@ -140,17 +148,5 @@ public class SellerView extends JFrame {
      */
     public int getProductQuantity() {
         return Integer.parseInt(productQuantityField.getText());
-    }
-
-    /**
-     * Updates the inventory display to reflect the current products in the seller's inventory.
-     */
-    public void updateInventoryDisplay() {
-        List<Product> products = seller.getInventory().getProducts();
-        inventoryDisplay.setText("");
-        for (Product product : products) {
-            inventoryDisplay.append(product.getName() + " - $" + product.getPrice() +
-                    " (Stock: " + product.getQuantity() + ")\n");
-        }
     }
 }

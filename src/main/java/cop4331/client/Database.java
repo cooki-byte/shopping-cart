@@ -8,10 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The Database class represents a singleton database that stores users and products.
- * It uses JSON files for persistence.
- */
 public class Database {
     private static Database instance; // Singleton instance
     private List<User> users;         // List of users
@@ -21,10 +17,7 @@ public class Database {
     private static final String USERS_FILE = "users.json";
     private static final String PRODUCTS_FILE = "products.json";
 
-    /**
-     * Private constructor to enforce Singleton pattern.
-     * Initializes the lists and loads data from JSON files.
-     */
+    // Private constructor to enforce Singleton pattern
     private Database() {
         this.users = new ArrayList<>();
         this.products = new ArrayList<>();
@@ -32,11 +25,7 @@ public class Database {
         loadData(); // Load data on initialization
     }
 
-    /**
-     * Gets the Singleton instance of Database.
-     * 
-     * @return the singleton instance
-     */
+    // Get the Singleton instance of Database
     public static synchronized Database getInstance() {
         if (instance == null) {
             instance = new Database();
@@ -44,25 +33,41 @@ public class Database {
         return instance;
     }
 
-    /**
-     * Loads data from JSON files into the users and products lists.
-     */
-    private void loadData() {
+    // Load data from JSON files
+    public void loadData() {
         try {
-            users = objectMapper.readValue(new File(USERS_FILE), new TypeReference<List<User>>() {});
-            products = objectMapper.readValue(new File(PRODUCTS_FILE), new TypeReference<List<Product>>() {});
+            // Load users
+            File usersFile = new File(USERS_FILE);
+            if (usersFile.exists()) {
+                users = objectMapper.readValue(usersFile, new TypeReference<List<User>>() {});
+                System.out.println("Users loaded: " + users.size());
+            } else {
+                System.out.println("Users file not found. Initializing empty user list.");
+                users = new ArrayList<>();
+            }
+
+            // Load products
+            File productsFile = new File(PRODUCTS_FILE);
+            if (productsFile.exists()) {
+                products = objectMapper.readValue(productsFile, new TypeReference<List<Product>>() {});
+                System.out.println("Products loaded: " + products.size());
+            } else {
+                System.out.println("Products file not found. Initializing empty product list.");
+                products = new ArrayList<>();
+            }
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error loading data.");
         }
     }
 
-    /**
-     * Saves data from the users and products lists to JSON files.
-     */
+    // Save data to JSON files
     public void saveData() {
         try {
+            // Save users
             objectMapper.writeValue(new File(USERS_FILE), users);
+
+            // Save products
             objectMapper.writeValue(new File(PRODUCTS_FILE), products);
 
             System.out.println("Data saved successfully.");
@@ -72,39 +77,23 @@ public class Database {
         }
     }
 
-    /**
-     * Gets the list of users.
-     * 
-     * @return the list of users
-     */
+    // Get the list of users
     public List<User> getUsers() {
         return users;
     }
 
-    /**
-     * Gets the list of products.
-     * 
-     * @return the list of products
-     */
+    // Get the list of products
     public List<Product> getProducts() {
         return products;
     }
 
-    /**
-     * Adds a user to the database and saves the data.
-     * 
-     * @param user the user to add
-     */
+    // Add a user to the database
     public void addUser(User user) {
         users.add(user);
         saveData(); // Save changes
     }
 
-    /**
-     * Adds a product to the database and saves the data.
-     * 
-     * @param product the product to add
-     */
+    // Add a product to the database
     public void addProduct(Product product) {
         products.add(product);
         saveData(); // Save changes
