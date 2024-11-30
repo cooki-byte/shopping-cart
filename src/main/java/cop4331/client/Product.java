@@ -1,5 +1,19 @@
 package cop4331.client;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Product.class, name = "product"),
+    @JsonSubTypes.Type(value = ProductBundle.class, name = "bundle"),
+    @JsonSubTypes.Type(value = DiscountedProduct.class, name = "discountedProduct")
+})
+
 /**
  * Represents a product in the system, including its details such as ID, name, description, price, and quantity.
  */

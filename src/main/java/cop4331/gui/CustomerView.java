@@ -2,6 +2,7 @@ package cop4331.gui;
 
 import cop4331.client.Customer;
 import cop4331.client.Database;
+import cop4331.client.LineItem;
 import cop4331.client.Product;
 
 import javax.swing.*;
@@ -106,6 +107,8 @@ public class CustomerView extends JFrame {
 
                 if (product == null) {
                     JOptionPane.showMessageDialog(this, "Product not found!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (product.getQuantity() < qty) {
+                    JOptionPane.showMessageDialog(this, "Insufficient stock for " + product.getName(), "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     customer.addToCart(product, qty);
                     updateCartDisplay(); // Update cart display
@@ -129,9 +132,19 @@ public class CustomerView extends JFrame {
                     JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
+                // Reduce stock quantities
+                for (LineItem item : customer.getCart().getItems()) {
+                    Product product = item.getProduct();
+                    int qty = item.getQuantity();
+                    product.reduceQuantity(qty);
+                }
+
+                // Save the updated products to the database
+                Database.getInstance().saveData();
                 customer.getCart().getItems().clear(); // Clear the cart
                 updateCartDisplay(); // Refresh the cart display
                 updateCartIcon();    // Reset the cart icon
+                updateProductDisplay(Database.getInstance().getProducts()); // Refresh product display
                 JOptionPane.showMessageDialog(this, "Thank you for your purchase!");
             }
         });

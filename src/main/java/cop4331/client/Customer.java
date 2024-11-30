@@ -90,7 +90,6 @@ public class Customer extends User {
             System.out.println("Insufficient stock for " + product.getName());
         } else {
             cart.addItem(product, qty); // Add item to the cart
-            product.setQuantity(product.getQuantity() - qty); // Decrease product stock
             System.out.println(qty + " x " + product.getName() + " added to cart.");
         }
     }

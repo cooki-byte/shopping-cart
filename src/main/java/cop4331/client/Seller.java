@@ -66,6 +66,7 @@ public class Seller extends User {
      */
     public void addProduct(Product product) {
         inventory.addProduct(product);
+        Database.getInstance().addProduct(product);
         System.out.println("Product added to inventory: " + product.getName());
     }
 
