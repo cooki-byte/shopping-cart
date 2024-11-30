@@ -1,6 +1,7 @@
 package cop4331.gui;
 
 import cop4331.client.Customer;
+import cop4331.client.Database;
 import cop4331.client.Product;
 
 import javax.swing.*;
@@ -15,11 +16,12 @@ public class CustomerView extends JFrame {
     private JTextField quantityField;
     private JButton addToCartButton;
     private JButton checkoutButton;
+    private JButton cartIcon;
 
     public CustomerView(Customer customer) {
         this.customer = customer;
         setTitle("Customer View - " + customer.getUsername());
-        setSize(600, 400);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -54,10 +56,62 @@ public class CustomerView extends JFrame {
 
         add(bottomPanel, BorderLayout.SOUTH);
 
+        // Add cart icon to the top right
+        JPanel topPanel = new JPanel(new BorderLayout());
+        cartIcon = new JButton("Cart (0)");
+        topPanel.add(cartIcon, BorderLayout.EAST);
+        add(topPanel, BorderLayout.NORTH);
+
         setLocationRelativeTo(null);
+
+        // Load products into the display
+        updateProductDisplay(Database.getInstance().getProducts());
+
+        // Add listeners
+        addToCartButton.addActionListener(e -> {
+            try {
+                String productId = getProductId();
+                int qty = getQuantity();
+
+                // Find the product in the database
+                Product product = Database.getInstance().getProducts().stream()
+                        .filter(p -> p.getId().equals(productId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (product == null) {
+                    JOptionPane.showMessageDialog(this, "Product not found!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    customer.addToCart(product, qty);
+                    updateCartDisplay(); // Update cart display
+                    updateCartIcon();    // Update cart icon
+                    JOptionPane.showMessageDialog(this, qty + " x " + product.getName() + " added to cart!");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid quantity!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        checkoutButton.addActionListener(e -> {
+            if (customer.getCart().getItems().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Your cart is empty!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int result = JOptionPane.showConfirmDialog(this,
+                    "Do you want to proceed to checkout?",
+                    "Checkout",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (result == JOptionPane.YES_OPTION) {
+                customer.getCart().getItems().clear(); // Clear the cart
+                updateCartDisplay(); // Refresh the cart display
+                updateCartIcon();    // Reset the cart icon
+                JOptionPane.showMessageDialog(this, "Thank you for your purchase!");
+            }
+        });
     }
 
-    // Methods to update product and cart displays
     public void updateProductDisplay(List<Product> products) {
         productDisplay.setText("");
         for (Product product : products) {
@@ -72,19 +126,18 @@ public class CustomerView extends JFrame {
                 item.getProduct().getName() + " x " + item.getQuantity() + "\n"));
     }
 
+    public void updateCartIcon() {
+        int itemCount = customer.getCart().getItems().stream()
+                .mapToInt(item -> item.getQuantity())
+                .sum();
+        cartIcon.setText("Cart (" + itemCount + ")");
+    }
+
     public String getProductId() {
         return productIdField.getText();
     }
 
     public int getQuantity() {
         return Integer.parseInt(quantityField.getText());
-    }
-
-    public JButton getAddToCartButton() {
-        return addToCartButton;
-    }
-
-    public JButton getCheckoutButton() {
-        return checkoutButton;
     }
 }
