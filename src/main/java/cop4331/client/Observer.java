@@ -1,15 +1,11 @@
 package cop4331.client;
 
 /**
- * Interface representing an observer in the Observer design pattern.
- * Observers are notified of changes in the observable objects they are monitoring.
+ * The Observer interface should be implemented by any class that wants to be notified of changes
+ * in the observable object.
+ *
+ * @param <T> the type of the observable object
  */
-public interface Observer {
-
-    /**
-     * Method called when the observable object notifies its observers of a change.
-     *
-     * @param observable the object that has been updated. This can be any type of object being observed.
-     */
-    void update(Object observable);
+public interface Observer<T> {
+    void update(T observable);
 }

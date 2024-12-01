@@ -2,14 +2,17 @@ package cop4331.client;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * The Cart class represents a shopping cart that contains line items and notifies observers of changes.
  */
-public class Cart {
+public class Cart implements Iterable<LineItem> {
     private List<LineItem> items;
-    private List<Observer> observers; // List of observers
-    private double total; // Add the total property
+    private transient List<Observer<Cart>> observers;
+    private double total;
+    private boolean empty;
 
     /**
      * Constructs an empty Cart.
@@ -17,58 +20,85 @@ public class Cart {
     public Cart() {
         this.items = new ArrayList<>();
         this.observers = new ArrayList<>();
-        this.total = 0.0; // Initialize total to zero
+        this.total = 0.0;
+        this.empty = true;
     }
 
     /**
-     * Returns the list of line items in the cart.
+     * Returns an unmodifiable list of line items in the cart.
      * 
-     * @return the list of line items
+     * @return the unmodifiable list of line items
      */
     public List<LineItem> getItems() {
-        return items;
+        return Collections.unmodifiableList(items);
     }
 
     /**
      * Sets the list of line items in the cart and notifies observers.
-     * Also updates the total cost.
+     * Also updates the total cost and empty status.
      * 
      * @param items the new list of line items
      */
     public void setItems(List<LineItem> items) {
-        this.items = items;
-        calculateTotal(); // Update total when items are set
-        notifyObservers(); // Notify observers when items are replaced
+        this.items = new ArrayList<>(items);
+        calculateTotal();
+        empty = this.items.isEmpty();
+        notifyObservers();
     }
 
     /**
      * Adds a line item to the cart and notifies observers.
-     * Also updates the total cost.
+     * Also updates the total cost and empty status.
      * 
      * @param product the product to add
      * @param qty the quantity of the product
      */
     public void addItem(Product product, int qty) {
         items.add(new LineItem(product, qty));
-        total += product.getPrice() * qty; // Update total
+        calculateTotal();
+        empty = items.isEmpty();
         notifyObservers();
     }
 
     /**
      * Removes a line item from the cart and notifies observers.
-     * Also updates the total cost.
+     * Also updates the total cost and empty status.
      * 
      * @param product the product to remove
      */
     public void removeItem(Product product) {
-        items.removeIf(item -> {
-            if (item.getProduct().equals(product)) {
-                total -= item.getProduct().getPrice() * item.getQuantity(); // Update total
-                return true;
-            }
-            return false;
-        });
+        items.removeIf(item -> item.getProduct().equals(product));
+        calculateTotal();
+        empty = items.isEmpty();
         notifyObservers();
+    }
+
+    /**
+     * Clears all items from the cart and notifies observers.
+     */
+    public void clearCart() {
+        items.clear();
+        calculateTotal();
+        empty = true;
+        notifyObservers();
+    }
+
+    /**
+     * Checks if the cart is empty.
+     * 
+     * @return true if the cart is empty, false otherwise
+     */
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    /**
+     * Sets the empty status of the cart.
+     * 
+     * @param empty the empty status to set
+     */
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
     }
 
     /**
@@ -91,28 +121,30 @@ public class Cart {
 
     /**
      * Recalculates the total cost based on the items in the cart.
+     * Also updates the empty status.
      */
     public void calculateTotal() {
         total = items.stream()
                      .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
                      .sum();
+        empty = items.isEmpty();
     }
 
     /**
-     * Add an observer.
+     * Adds an observer.
      * 
      * @param observer the observer to add
      */
-    public void addObserver(Observer observer) {
+    public void addObserver(Observer<Cart> observer) {
         observers.add(observer);
     }
 
     /**
-     * Remove an observer.
+     * Removes an observer.
      * 
      * @param observer the observer to remove
      */
-    public void removeObserver(Observer observer) {
+    public void removeObserver(Observer<Cart> observer) {
         observers.remove(observer);
     }
 
@@ -120,8 +152,18 @@ public class Cart {
      * Notifies all observers of changes to the cart.
      */
     public void notifyObservers() {
-        for (Observer observer : observers) {
+        for (Observer<Cart> observer : observers) {
             observer.update(this);
         }
+    }
+
+    /**
+     * Provides an iterator over the line items in the cart.
+     * 
+     * @return an iterator over the line items
+     */
+    @Override
+    public Iterator<LineItem> iterator() {
+        return items.iterator();
     }
 }

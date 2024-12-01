@@ -119,7 +119,7 @@ public class Customer extends User {
         }
 
         // Clear the cart
-        cart.getItems().clear();
+        cart.clearCart(); // Properly clears the cart
         Database.getInstance().updateUser(this); // Save the cleared cart to users.json
 
         System.out.println("Checkout completed successfully. Thank you for your purchase!");
