@@ -24,6 +24,9 @@ public class Product implements Serializable {
     /** The unique identifier of the seller of the product. */
     private String sellerId;
 
+    /** The invoice price of the product. */
+    private double invoicePrice;
+
     /**
      * Default constructor for creating an empty product.
      */
@@ -38,14 +41,16 @@ public class Product implements Serializable {
      * @param price the price of the product.
      * @param quantity the quantity of the product available in stock.
      * @param sellerId sellerId the unique identifier of the seller of the product.
+     * @param invoicePrice the invoice price of the product.
      */
-    public Product(String id, String name, String description, double price, int quantity, String sellerId) {
+    public Product(String id, String name, String description, double price, int quantity, String sellerId, double invoicePrice) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
         this.sellerId = sellerId;
+        this.invoicePrice = invoicePrice;
     }
 
     /**
@@ -154,5 +159,23 @@ public class Product implements Serializable {
      */
     public void setSellerId(String sellerId) {
         this.sellerId = sellerId;
+    }
+
+    /**
+     * Retrieves the invoice price of the product.
+     *
+     * @return the invoice price.
+     */
+    public double getInvoicePrice() {
+        return invoicePrice;
+    }
+
+    /**
+     * Sets the invoice price of the product.
+     *
+     * @param invoicePrice the invoice price to set.
+     */
+    public void setInvoicePrice(double invoicePrice) {
+        this.invoicePrice = invoicePrice;
     }
 }

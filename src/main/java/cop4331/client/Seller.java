@@ -64,7 +64,7 @@ public class Seller extends User implements Serializable {
         Database.getInstance().addProduct(product);
 
         // Update financial data with the cost of the product
-        double costAmount = product.getPrice() * product.getQuantity();
+        double costAmount = product.getInvoicePrice() * product.getQuantity();
         financialData.updateData(0, costAmount); // No revenue yet, only cost
         System.out.println("Product added to inventory: " + product.getName());
     }

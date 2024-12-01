@@ -18,9 +18,10 @@ public class SellerView extends JFrame {
     private Seller seller;
     private JTextArea inventoryDisplay;
     private JTextField productNameField;
-    private JTextField productDescriptionField; // Added description field
+    private JTextField productDescriptionField; 
     private JTextField productPriceField;
     private JTextField productQuantityField;
+    private JTextField productInvoicePriceField;
     private JButton addProductButton;
     private JButton viewFinancialButton;
 
@@ -61,6 +62,10 @@ public class SellerView extends JFrame {
         productQuantityField = new JTextField();
         bottomPanel.add(productQuantityField);
 
+        bottomPanel.add(new JLabel("Invoice Price:")); 
+        productInvoicePriceField = new JTextField();  
+        bottomPanel.add(productInvoicePriceField);
+
         addProductButton = new JButton("Add Product");
         viewFinancialButton = new JButton("View Financial Data");
         bottomPanel.add(addProductButton);
@@ -74,9 +79,10 @@ public class SellerView extends JFrame {
         addProductButton.addActionListener(e -> {
             try {
                 String name = getProductName();
-                String description = getProductDescription(); // Get the description
+                String description = getProductDescription(); 
                 double price = getProductPrice();
                 int quantity = getProductQuantity();
+                double invoicePrice = getProductInvoicePrice();
 
                 if (name.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Product name cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -94,9 +100,13 @@ public class SellerView extends JFrame {
                     JOptionPane.showMessageDialog(this, "Quantity must be greater than 0!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                if (invoicePrice <= 0) {
+                    JOptionPane.showMessageDialog(this, "Invoice price must be greater than 0!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 String productId = String.valueOf(System.currentTimeMillis());
-                Product product = new Product(productId, name, description, price, quantity, seller.getId());
+                Product product = new Product(productId, name, description, price, quantity, seller.getId(), invoicePrice);
                 seller.addProduct(product);
 
                 // Save the updated data to products.json
@@ -105,9 +115,10 @@ public class SellerView extends JFrame {
                 updateInventoryDisplay();
 
                 productNameField.setText("");
-                productDescriptionField.setText(""); // Clear the description field
+                productDescriptionField.setText(""); 
                 productPriceField.setText("");
                 productQuantityField.setText("");
+                productInvoicePriceField.setText("");
 
                 JOptionPane.showMessageDialog(this, "Product added successfully!");
 
@@ -137,7 +148,8 @@ public class SellerView extends JFrame {
         for (Product product : products) {
             inventoryDisplay.append("Name: " + product.getName() + "\n");
             inventoryDisplay.append("Description: " + product.getDescription() + "\n");
-            inventoryDisplay.append("Price: $" + product.getPrice() + "\n");
+            inventoryDisplay.append("Listed Price: $" + product.getPrice() + "\n");
+            inventoryDisplay.append("Invoice Price: $" + product.getInvoicePrice() + "\n");
             inventoryDisplay.append("Stock: " + product.getQuantity() + "\n");
             inventoryDisplay.append("-----------------------------------\n");
         }
@@ -179,5 +191,15 @@ public class SellerView extends JFrame {
      */
     public int getProductQuantity() {
         return Integer.parseInt(productQuantityField.getText());
+    }
+
+    /**
+     * Retrieves the product invoice price entered by the seller.
+     *
+     * @return the entered product invoice price.
+     * @throws NumberFormatException if the entered invoice price is not a valid double.
+     */
+    public double getProductInvoicePrice() {
+        return Double.parseDouble(productInvoicePriceField.getText());
     }
 }
