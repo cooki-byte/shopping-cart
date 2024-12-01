@@ -5,7 +5,9 @@ import cop4331.client.Database;
 import cop4331.client.Product;
 import cop4331.client.Cart;
 import cop4331.client.Observer;
-import cop4331.client.LineItem; // Add this import
+import cop4331.client.LineItem;
+
+import cop4331.gui.CheckoutView; // Import CheckoutView
 
 import javax.swing.*;
 import java.awt.*;
@@ -138,16 +140,13 @@ public class CustomerView extends JFrame implements Observer<Cart> {
                 return;
             }
 
-            int result = JOptionPane.showConfirmDialog(this,
-                    "Do you want to proceed to checkout?",
-                    "Checkout",
-                    JOptionPane.YES_NO_OPTION);
+            // Open the CheckoutView
+            CheckoutView checkoutView = new CheckoutView(this, customer);
+            checkoutView.setVisible(true);
 
-            if (result == JOptionPane.YES_OPTION) {
-                customer.checkout(); // Call the Customer's checkout method
-                // No need to manually update cart display and icon here since the observer pattern handles it
-                JOptionPane.showMessageDialog(this, "Thank you for your purchase!");
-            }
+            // After checkout, refresh the UI
+            updateCartDisplay();
+            updateCartIcon();
         });
     }
 
