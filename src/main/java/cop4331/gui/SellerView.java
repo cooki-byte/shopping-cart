@@ -3,6 +3,7 @@ package cop4331.gui;
 import cop4331.client.Product;
 import cop4331.client.Seller;
 import cop4331.client.FinancialData;
+import cop4331.client.Database;
 
 import javax.swing.*;
 import java.awt.*;
@@ -85,8 +86,12 @@ public class SellerView extends JFrame {
                 }
 
                 String productId = String.valueOf(System.currentTimeMillis());
-                Product product = new Product(productId, name, name + " description", price, quantity, seller);
+                Product product = new Product(productId, name, name + " description", price, quantity, seller.getId());
                 seller.addProduct(product);
+
+                // Save the updated data to products.json
+                Database.getInstance().saveData();
+
                 updateInventoryDisplay();
 
                 productNameField.setText("");

@@ -49,9 +49,9 @@ public class Database {
     /**
      * Loads users and products from JSON files into memory.
      */
-public void loadData() {
-    try {
-        // Debugging users.json
+    public void loadData() {
+        try {
+            // Debugging users.json
         File usersFile = new File(USERS_FILE);
         if (usersFile.exists()) {
             System.out.println("Loading users.json...");
@@ -70,10 +70,19 @@ public void loadData() {
         } else {
             products = new ArrayList<>();
         }
-    } catch (IOException e) {
-        e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-}
+
+    /**
+     * Adds a product to the product list.
+     *
+     * @param product the product to add.
+     */
+    public void addProduct(Product product) {
+        products.add(product);
+    }
 
     /**
      * Saves users and products to their respective JSON files.

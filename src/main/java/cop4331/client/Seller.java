@@ -1,12 +1,12 @@
 package cop4331.client;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * Represents a seller in the system, managing an inventory of products.
  * Inherits from the {@link User} class.
  */
-public class Seller extends User {
+public class Seller extends User implements Serializable {
     private Inventory inventory;
     private FinancialData financialData;
 
@@ -14,12 +14,13 @@ public class Seller extends User {
      * Default constructor that initializes the seller with an empty inventory.
      */
     public Seller() {
+        super();
         this.inventory = new Inventory();
         this.financialData = new FinancialData();
     }
 
     /**
-     * Constructs a seller with the specified ID, username, and password, 
+     * Constructs a seller with the specified ID, username, and password,
      * and initializes an empty inventory.
      *
      * @param id the unique identifier for the seller.
@@ -29,20 +30,6 @@ public class Seller extends User {
     public Seller(String id, String username, String password) {
         super(id, username, password, "seller");
         this.inventory = new Inventory();
-        this.financialData = new FinancialData();
-    }
-
-    /**
-     * Constructs a seller with the specified ID, username, password, and inventory.
-     *
-     * @param id the unique identifier for the seller.
-     * @param username the seller's username.
-     * @param password the seller's password.
-     * @param inventory the inventory managed by the seller.
-     */
-    public Seller(String id, String username, String password, Inventory inventory) {
-        super(id, username, password, "seller");
-        this.inventory = inventory;
         this.financialData = new FinancialData();
     }
 
@@ -65,27 +52,21 @@ public class Seller extends User {
     }
 
     /**
-     * Adds a product to the seller's inventory and notifies observers of the change.
+     * Adds a product to the seller's inventory and updates financial data.
      *
      * @param product the product to add to the inventory.
      */
     public void addProduct(Product product) {
-        product.setSeller(this); // Set the seller reference
+        product.setSellerId(this.getId()); // Set the seller reference
         inventory.addProduct(product);
-        // Update financial data with the cost of the product
-        financialData.updateData(0, product.getPrice() * product.getQuantity());
-        System.out.println("Product added to inventory: " + product.getName());
-    }
 
-    /**
-     * Records a sale of a product and updates the financial data.
-     *
-     * @param product the product sold
-     * @param quantity the quantity sold
-     */
-    public void recordSale(Product product, int quantity) {
-        double saleAmount = product.getPrice() * quantity;
-        financialData.updateData(saleAmount, 0); // Update revenue
+        // Add the product to the global products list in the Database
+        Database.getInstance().addProduct(product);
+
+        // Update financial data with the cost of the product
+        double costAmount = product.getPrice() * product.getQuantity();
+        financialData.updateData(0, costAmount); // No revenue yet, only cost
+        System.out.println("Product added to inventory: " + product.getName());
     }
 
     /**
@@ -97,19 +78,34 @@ public class Seller extends User {
     }
 
     /**
-     * Calculates and displays the total financial value of the inventory.
-     * The total value is computed as the sum of (price * quantity) for all products.
+     * Views the financial data, displaying revenues, costs, and profits.
      */
     public void viewFinancialData() {
-        double totalValue = inventory.getProducts().stream()
-                .mapToDouble(product -> product.getPrice() * product.getQuantity())
-                .sum();
-        System.out.println("Total inventory value: $" + totalValue);
+        double revenues = financialData.getRevenues();
+        double costs = financialData.getCosts();
+        double profits = financialData.getProfits();
+
+        System.out.println("Financial Data:");
+        System.out.println("Total Revenues: $" + String.format("%.2f", revenues));
+        System.out.println("Total Costs: $" + String.format("%.2f", costs));
+        System.out.println("Total Profits: $" + String.format("%.2f", profits));
+    }
+
+    /**
+     * Records a sale of a product and updates the financial data.
+     *
+     * @param product the product sold
+     * @param quantity the quantity sold
+     */
+    public void recordSale(Product product, int quantity) {
+        double saleAmount = product.getPrice() * quantity;
+        double costAmount = product.getPrice() * quantity;
+        financialData.updateData(saleAmount, costAmount);
     }
 
     /**
      * Gets the seller's financial data.
-     * 
+     *
      * @return the seller's financial data
      */
     public FinancialData getFinancialData() {

@@ -1,9 +1,11 @@
 package cop4331.client;
 
+import java.io.Serializable;
+
 /**
  * Represents a product in the system, including its details such as ID, name, description, price, and quantity.
  */
-public class Product {
+public class Product implements Serializable {
     /** The unique identifier of the product. */
     private String id;
 
@@ -19,8 +21,8 @@ public class Product {
     /** The quantity of the product available in stock. */
     private int quantity;
 
-    /** The seller of the product. */
-    private Seller seller;
+    /** The unique identifier of the seller of the product. */
+    private String sellerId;
 
     /**
      * Default constructor for creating an empty product.
@@ -35,15 +37,15 @@ public class Product {
      * @param description a brief description of the product.
      * @param price the price of the product.
      * @param quantity the quantity of the product available in stock.
-     * @param seller the seller of the product.
+     * @param sellerId sellerId the unique identifier of the seller of the product.
      */
-    public Product(String id, String name, String description, double price, int quantity, Seller seller) {
+    public Product(String id, String name, String description, double price, int quantity, String sellerId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
-        this.seller = seller;
+        this.sellerId = sellerId;
     }
 
     /**
@@ -137,20 +139,20 @@ public class Product {
     }
 
     /**
-     * Retrieves the seller of the product.
+     * Retrieves the seller ID of the product.
      *
-     * @return the seller of the product.
+     * @return the seller ID.
      */
-    public Seller getSeller() {
-        return seller;
+    public String getSellerId() {
+        return sellerId;
     }
 
     /**
-     * Sets the seller of the product.
+     * Sets the seller ID of the product.
      *
-     * @param seller the seller to set.
+     * @param sellerId the seller ID to set.
      */
-    public void setSeller(Seller seller) {
-        this.seller = seller;
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
     }
 }
