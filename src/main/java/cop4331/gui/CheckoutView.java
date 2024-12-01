@@ -13,7 +13,6 @@ import java.awt.*;
 public class CheckoutView extends JDialog {
     private Customer customer;
     private Cart cart;
-    private Payment payment;
 
     private JTextField cardNumberField;
     private JTextField expirationField;
@@ -26,7 +25,6 @@ public class CheckoutView extends JDialog {
         super(parent, "Checkout", true);
         this.customer = customer;
         this.cart = customer.getCart();
-        this.payment = new Payment();
 
         initializeComponents();
         layoutComponents();
@@ -130,6 +128,7 @@ public class CheckoutView extends JDialog {
         }
 
         // Simulate payment processing
+        Payment payment = new Payment();
         boolean paymentSuccess = payment.processPayment(cardNumber, expiration, cvv, amount);
         if (paymentSuccess) {
             // Clear the cart

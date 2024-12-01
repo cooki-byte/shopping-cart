@@ -1,1 +1,1 @@
-[{"id":"1","name":"Laptop","description":"A high-performance laptop","price":999.99,"quantity":1,"seller":null},{"id":"2","name":"Mouse","description":"A wireless mouse","price":29.99,"quantity":50,"seller":null}]
+[{"id":"1","name":"Laptop","description":"A high-performance laptop","price":999.99,"quantity":-1,"seller":null},{"id":"2","name":"Mouse","description":"A wireless mouse","price":29.99,"quantity":50,"seller":null}]
