@@ -133,4 +133,19 @@ public class Database {
     public List<Product> getProducts() {
         return products;
     }
+    
+    /**
+     * Finds a seller by their unique ID.
+     *
+     * @param sellerId the unique identifier of the seller.
+     * @return the Seller object, or null if not found.
+     */
+    public Seller getSellerById(String sellerId) {
+        for (User user : users) {
+            if (user instanceof Seller && user.getId().equals(sellerId)) {
+                return (Seller) user;
+            }
+        }
+        return null;
+    }
 }
