@@ -3,6 +3,9 @@ package cop4331.gui;
 import cop4331.client.Customer;
 import cop4331.client.Database;
 import cop4331.client.Product;
+import cop4331.client.Cart;
+import cop4331.client.Observer;
+import cop4331.client.LineItem; // Add this import
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,10 +13,10 @@ import java.util.List;
 
 /**
  * GUI class representing the customer view in the system.
- * Provides functionality for customers to browse products, add items to their cart, 
+ * Provides functionality for customers to browse products, add items to their cart,
  * view their cart, and proceed to checkout.
  */
-public class CustomerView extends JFrame {
+public class CustomerView extends JFrame implements Observer<Cart> {
     /** The customer using this view. */
     private Customer customer;
 
@@ -87,10 +90,23 @@ public class CustomerView extends JFrame {
         topPanel.add(cartIcon, BorderLayout.EAST);
         add(topPanel, BorderLayout.NORTH);
 
+        // Register as an observer of the cart
+        customer.getCart().addObserver(this);
+
+        // Add ActionListener to cartIcon
+        cartIcon.addActionListener(e -> {
+            CartView cartView = new CartView(customer);
+            cartView.setVisible(true);
+        });
+
         setLocationRelativeTo(null);
 
         // Load products into the display
         updateProductDisplay(Database.getInstance().getProducts());
+
+        // Initial update of cart display and icon
+        updateCartDisplay();
+        updateCartIcon();
 
         // Add listeners
         addToCartButton.addActionListener(e -> {
@@ -108,8 +124,7 @@ public class CustomerView extends JFrame {
                     JOptionPane.showMessageDialog(this, "Product not found!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     customer.addToCart(product, qty);
-                    updateCartDisplay(); // Update cart display
-                    updateCartIcon();    // Update cart icon
+                    // No need to manually update cart display and icon here since the observer pattern handles it
                     JOptionPane.showMessageDialog(this, qty + " x " + product.getName() + " added to cart!");
                 }
             } catch (NumberFormatException ex) {
@@ -118,7 +133,7 @@ public class CustomerView extends JFrame {
         });
 
         checkoutButton.addActionListener(e -> {
-            if (customer.getCart().getItems().isEmpty()) {
+            if (customer.getCart().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Your cart is empty!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -130,8 +145,7 @@ public class CustomerView extends JFrame {
 
             if (result == JOptionPane.YES_OPTION) {
                 customer.checkout(); // Call the Customer's checkout method
-                updateCartDisplay(); // Refresh the cart display
-                updateCartIcon();    // Reset the cart icon
+                // No need to manually update cart display and icon here since the observer pattern handles it
                 JOptionPane.showMessageDialog(this, "Thank you for your purchase!");
             }
         });
@@ -164,7 +178,7 @@ public class CustomerView extends JFrame {
      */
     public void updateCartIcon() {
         int itemCount = customer.getCart().getItems().stream()
-                .mapToInt(item -> item.getQuantity())
+                .mapToInt(LineItem::getQuantity)
                 .sum();
         cartIcon.setText("Cart (" + itemCount + ")");
     }
@@ -186,5 +200,18 @@ public class CustomerView extends JFrame {
      */
     public int getQuantity() {
         return Integer.parseInt(quantityField.getText());
+    }
+
+    /**
+     * Called when the cart is updated.
+     *
+     * @param cart the cart that was updated.
+     */
+    @Override
+    public void update(Cart cart) {
+        SwingUtilities.invokeLater(() -> {
+            updateCartDisplay();
+            updateCartIcon();
+        });
     }
 }
