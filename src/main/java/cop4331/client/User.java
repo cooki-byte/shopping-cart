@@ -11,7 +11,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
-    property = "type"
+    property = "type",
+    visible = true
 )
 @JsonSubTypes({
     @JsonSubTypes.Type(value = Customer.class, name = "customer"),
@@ -28,6 +29,11 @@ public abstract class User {
     protected String password;
 
     /**
+     * The type of the user.
+     */
+    protected String type;
+
+    /**
      * Default constructor required for Jackson deserialization.
      */
     public User() {}
@@ -39,10 +45,11 @@ public abstract class User {
      * @param username the username for the user.
      * @param password the password for the user.
      */
-    public User(String id, String username, String password) {
+    public User(String id, String username, String password, String type) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.type = type;
     }
 
     /**
@@ -60,6 +67,24 @@ public abstract class User {
      */
     public void logout() {
         System.out.println(username + " logged out.");
+    }
+
+    /**
+     * Retrieves the type of the user.
+     *
+     * @return the type of the user.
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of the user.
+     *
+     * @param type the type of the user.
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**

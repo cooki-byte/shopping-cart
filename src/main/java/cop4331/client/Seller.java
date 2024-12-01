@@ -27,7 +27,7 @@ public class Seller extends User {
      * @param password the seller's password.
      */
     public Seller(String id, String username, String password) {
-        super(id, username, password);
+        super(id, username, password, "seller");
         this.inventory = new Inventory();
         this.financialData = new FinancialData();
     }
@@ -41,7 +41,7 @@ public class Seller extends User {
      * @param inventory the inventory managed by the seller.
      */
     public Seller(String id, String username, String password, Inventory inventory) {
-        super(id, username, password);
+        super(id, username, password, "seller");
         this.inventory = inventory;
         this.financialData = new FinancialData();
     }

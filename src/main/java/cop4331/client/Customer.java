@@ -26,7 +26,7 @@ public class Customer extends User {
      * @param password the customer's password
      */
     public Customer(String id, String username, String password) {
-        super(id, username, password);
+        super(id, username, password, "customer");
         this.cart = new Cart(); // Initialize with an empty cart
     }
 
@@ -40,7 +40,7 @@ public class Customer extends User {
      * @param cart the customer's cart
      */
     public Customer(String id, String username, String password, Cart cart) {
-        super(id, username, password);
+        super(id, username, password, "customer");
         this.cart = cart;
     }
 
@@ -91,8 +91,38 @@ public class Customer extends User {
         } else {
             cart.addItem(product, qty); // Add item to the cart
             product.setQuantity(product.getQuantity() - qty); // Decrease product stock
+
+            // Update the database with the changes
+            Database.getInstance().updateProduct(product); // Save updated product to products.json
+            Database.getInstance().updateUser(this);       // Save updated customer to users.json
+
             System.out.println(qty + " x " + product.getName() + " added to cart.");
         }
+    }
+
+        /**
+     * Completes the checkout process by clearing the cart and updating product inventory.
+     */
+    public void checkout() {
+        if (cart.getItems().isEmpty()) {
+            System.out.println("Your cart is empty. Add items before checking out.");
+            return;
+        }
+
+        for (LineItem item : cart.getItems()) {
+            Product product = item.getProduct();
+            int purchasedQty = item.getQuantity();
+
+            // Update the product inventory
+            product.setQuantity(product.getQuantity() - purchasedQty);
+            Database.getInstance().updateProduct(product); // Save product changes to products.json
+        }
+
+        // Clear the cart
+        cart.getItems().clear();
+        Database.getInstance().updateUser(this); // Save the cleared cart to users.json
+
+        System.out.println("Checkout completed successfully. Thank you for your purchase!");
     }
 
     /**

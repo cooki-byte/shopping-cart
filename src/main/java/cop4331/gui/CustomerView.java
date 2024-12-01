@@ -129,7 +129,7 @@ public class CustomerView extends JFrame {
                     JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
-                customer.getCart().getItems().clear(); // Clear the cart
+                customer.checkout(); // Call the Customer's checkout method
                 updateCartDisplay(); // Refresh the cart display
                 updateCartIcon();    // Reset the cart icon
                 JOptionPane.showMessageDialog(this, "Thank you for your purchase!");
