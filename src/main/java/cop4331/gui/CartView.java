@@ -2,6 +2,7 @@ package cop4331.gui;
 
 import cop4331.client.Cart;
 import cop4331.client.Customer;
+import cop4331.client.Database;
 import cop4331.client.LineItem;
 import cop4331.client.Product;
 import cop4331.gui.CheckoutView;
@@ -41,7 +42,7 @@ public class CartView extends JFrame {
 
     private void initializeComponents() {
         // Initialize the cart table model and table
-        cartTableModel = new CartTableModel(cart.getItems());
+        cartTableModel = new CartTableModel(cart);
         cartTable = new JTable(cartTableModel);
 
         // Allow editing of the Quantity column
@@ -87,11 +88,19 @@ public class CartView extends JFrame {
     }
 
     private void updateCart() {
+        // Stop cell editing to ensure changes are committed
+        if (cartTable.isEditing()) {
+            cartTable.getCellEditor().stopCellEditing();
+        }
+
         // Apply changes to quantities
         cartTableModel.applyChanges();
 
         // Update the total
         updateTotal();
+
+        // Save the updated cart to the database
+        Database.getInstance().updateUser(customer);
     }
 
     private void updateTotal() {
@@ -121,15 +130,10 @@ public class CartView extends JFrame {
     // Inner class for the cart table model
     private class CartTableModel extends AbstractTableModel {
         private final String[] columnNames = {"Product Name", "Price per Unit", "Quantity", "Total Price", "Remove"};
-        private List<LineItem> items;
+        private Cart cart;
 
-        public CartTableModel(List<LineItem> items) {
-            this.items = items;
-        }
-
-        @Override
-        public int getRowCount() {
-            return items.size();
+        public CartTableModel(Cart cart) {
+            this.cart = cart;
         }
 
         @Override
@@ -138,13 +142,18 @@ public class CartView extends JFrame {
         }
 
         @Override
-        public String getColumnName(int col) {
-            return columnNames[col];
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+
+        @Override
+        public int getRowCount() {
+            return cart.getItems().size();
         }
 
         @Override
         public Object getValueAt(int row, int col) {
-            LineItem item = items.get(row);
+            LineItem item = cart.getItems().get(row);
             Product product = item.getProduct();
             switch (col) {
                 case 0:
@@ -170,13 +179,12 @@ public class CartView extends JFrame {
 
         @Override
         public void setValueAt(Object value, int row, int col) {
-            LineItem item = items.get(row);
+            LineItem item = cart.getItems().get(row);
             if (col == 2) {
                 try {
                     int newQuantity = Integer.parseInt(value.toString());
                     if (newQuantity > 0) {
-                        item.setQuantity(newQuantity);
-                        cart.calculateTotal();
+                        cart.updateItemQuantity(item.getProduct(), newQuantity);
                         fireTableCellUpdated(row, col);
                         fireTableCellUpdated(row, 3); // Update the total price column
                         updateTotal();
@@ -186,12 +194,13 @@ public class CartView extends JFrame {
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(CartView.this, "Invalid quantity.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+                Database.getInstance().updateUser(customer); // Save changes
             } else if (col == 4) {
                 // Remove item
                 cart.removeItem(item.getProduct());
-                items.remove(row);
-                fireTableRowsDeleted(row, row);
+                fireTableDataChanged();
                 updateTotal();
+                Database.getInstance().updateUser(customer); // Save changes
             }
         }
 
@@ -218,25 +227,24 @@ public class CartView extends JFrame {
 
     private class ButtonEditor extends DefaultCellEditor {
         private JButton button;
-        private int row;
+        private LineItem item;
 
         public ButtonEditor(JCheckBox checkBox) {
             super(checkBox);
             button = new JButton("Remove");
             button.addActionListener(e -> {
                 fireEditingStopped();
-                LineItem item = cart.getItems().get(row);
                 cart.removeItem(item.getProduct());
-                cartTableModel.items.remove(row);
-                cartTableModel.fireTableRowsDeleted(row, row);
+                cartTableModel.fireTableDataChanged();
                 updateTotal();
+                Database.getInstance().updateUser(customer); // Save changes
             });
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value,
                                                      boolean isSelected, int row, int column) {
-            this.row = row;
+            this.item = cart.getItems().get(row); // Capture the LineItem before any changes
             return button;
         }
 

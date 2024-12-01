@@ -72,6 +72,22 @@ public class Cart implements Iterable<LineItem> {
         empty = items.isEmpty();
         notifyObservers();
     }
+    /**
+     * Handles quantity updates and notifies observers.
+     * 
+     * @param product
+     * @param newQuantity
+     */
+    public void updateItemQuantity(Product product, int newQuantity) {
+        for (LineItem item : items) {
+            if (item.getProduct().equals(product)) {
+                item.setQuantity(newQuantity);
+                calculateTotal();
+                notifyObservers(); // Notify observers about the change
+                return;
+            }
+        }
+    }
 
     /**
      * Clears all items from the cart and notifies observers.
