@@ -132,7 +132,7 @@ public class CheckoutView extends JDialog {
         boolean paymentSuccess = payment.processPayment(cardNumber, expiration, cvv, amount);
         if (paymentSuccess) {
             // Clear the cart
-            customer.checkout();
+            customer.checkout(); // Reduces stock quantity
 
             // Inform the user
             JOptionPane.showMessageDialog(this, "Payment successful! Thank you for your purchase.");

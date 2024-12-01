@@ -213,6 +213,7 @@ public class CustomerView extends JFrame implements Observer<Cart> {
         SwingUtilities.invokeLater(() -> {
             updateCartDisplay();
             updateCartIcon();
+            updateProductDisplay(Database.getInstance().getProducts()); // Refresh product display
         });
     }
 }
