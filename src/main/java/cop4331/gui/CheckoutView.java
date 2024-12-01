@@ -2,6 +2,7 @@ package cop4331.gui;
 
 import cop4331.client.Customer;
 import cop4331.client.Cart;
+import cop4331.client.Payment;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,7 @@ import java.awt.*;
 public class CheckoutView extends JDialog {
     private Customer customer;
     private Cart cart;
+    private Payment payment;
 
     private JTextField cardNumberField;
     private JTextField expirationField;
@@ -24,6 +26,7 @@ public class CheckoutView extends JDialog {
         super(parent, "Checkout", true);
         this.customer = customer;
         this.cart = customer.getCart();
+        this.payment = new Payment();
 
         initializeComponents();
         layoutComponents();
@@ -103,6 +106,7 @@ public class CheckoutView extends JDialog {
         String cardNumber = cardNumberField.getText().trim();
         String expiration = expirationField.getText().trim();
         String cvv = cvvField.getText().trim();
+        double amount = cart.getTotal();
 
         // Basic validation
         if (cardNumber.isEmpty() || expiration.isEmpty() || cvv.isEmpty()) {
@@ -126,8 +130,7 @@ public class CheckoutView extends JDialog {
         }
 
         // Simulate payment processing
-        boolean paymentSuccess = processPaymentSimulation();
-
+        boolean paymentSuccess = payment.processPayment(cardNumber, expiration, cvv, amount);
         if (paymentSuccess) {
             // Clear the cart
             customer.checkout();
@@ -140,11 +143,5 @@ public class CheckoutView extends JDialog {
         } else {
             JOptionPane.showMessageDialog(this, "Payment failed. Please try again.", "Payment Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private boolean processPaymentSimulation() {
-        // Simulate payment processing logic
-        // In a real application, integrate with a payment gateway
-        return true;
     }
 }
