@@ -76,12 +76,13 @@ public class Database {
     }
 
     /**
-     * Adds a product to the product list.
+     * Adds a product to the database and saves the data.
      *
      * @param product the product to add.
      */
     public void addProduct(Product product) {
         products.add(product);
+        saveData(); // Save changes
     }
 
     /**
@@ -91,6 +92,8 @@ public class Database {
         try {
             objectMapper.writeValue(new File(USERS_FILE), users);
             objectMapper.writeValue(new File(PRODUCTS_FILE), products);
+
+            System.out.println("Data saved successfully.");
         } catch (IOException e) {
             e.printStackTrace();
         }

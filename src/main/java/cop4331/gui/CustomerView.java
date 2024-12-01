@@ -124,6 +124,8 @@ public class CustomerView extends JFrame implements Observer<Cart> {
 
                 if (product == null) {
                     JOptionPane.showMessageDialog(this, "Product not found!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (product.getQuantity() < qty) {
+                    JOptionPane.showMessageDialog(this, "Insufficient stock for " + product.getName(), "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     customer.addToCart(product, qty);
                     // No need to manually update cart display and icon here since the observer pattern handles it
