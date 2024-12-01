@@ -23,8 +23,8 @@ public class Database {
     private List<Product> products;   // List of products
     private ObjectMapper objectMapper; // JSON serializer/deserializer
 
-    private static final String USERS_FILE = "users.json";
-    private static final String PRODUCTS_FILE = "products.json";
+    private static final String USERS_FILE = "C:\\Users\\ftlsk\\OneDrive\\Desktop\\javaproject\\shopping-cart\\users.json";
+    private static final String PRODUCTS_FILE = "C:\\Users\\ftlsk\\OneDrive\\Desktop\\javaproject\\shopping-cart\\products.json";
 
     // Private constructor for Singleton pattern
     private Database() {

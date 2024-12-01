@@ -111,11 +111,14 @@ public class Customer extends User {
 
             // Update the product inventory
             product.setQuantity(product.getQuantity() - purchasedQty);
+            
 
             // Update the seller's financial data
             Seller seller = Database.getInstance().getSellerById(product.getSellerId());
             if (seller != null) {
                 seller.recordSale(product, purchasedQty);
+                seller.getInventory().updateProduct(product); // Update seller's inventory
+                Database.getInstance().updateUser(seller); // Save updated seller to users.json
             }
 
             Database.getInstance().updateProduct(product); // Save product changes to products.json
