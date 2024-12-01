@@ -11,13 +11,14 @@ import java.util.List;
 
 /**
  * GUI class representing the seller view in the system.
- * Provides functionality for sellers to view and manage their inventory, 
+ * Provides functionality for sellers to view and manage their inventory,
  * add new products, and access financial data.
  */
 public class SellerView extends JFrame {
     private Seller seller;
     private JTextArea inventoryDisplay;
     private JTextField productNameField;
+    private JTextField productDescriptionField; // Added description field
     private JTextField productPriceField;
     private JTextField productQuantityField;
     private JButton addProductButton;
@@ -43,10 +44,14 @@ public class SellerView extends JFrame {
         add(inventoryScroll, BorderLayout.CENTER);
 
         // Bottom Panel
-        JPanel bottomPanel = new JPanel(new GridLayout(4, 2, 5, 5));
+        JPanel bottomPanel = new JPanel(new GridLayout(5, 2, 5, 5)); // Changed to 5 rows
         bottomPanel.add(new JLabel("Product Name:"));
         productNameField = new JTextField();
         bottomPanel.add(productNameField);
+
+        bottomPanel.add(new JLabel("Description:")); // Added description label
+        productDescriptionField = new JTextField();   // Added description field
+        bottomPanel.add(productDescriptionField);
 
         bottomPanel.add(new JLabel("Price:"));
         productPriceField = new JTextField();
@@ -69,11 +74,16 @@ public class SellerView extends JFrame {
         addProductButton.addActionListener(e -> {
             try {
                 String name = getProductName();
+                String description = getProductDescription(); // Get the description
                 double price = getProductPrice();
                 int quantity = getProductQuantity();
 
                 if (name.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Product name cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (description.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Product description cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 if (price <= 0) {
@@ -86,7 +96,7 @@ public class SellerView extends JFrame {
                 }
 
                 String productId = String.valueOf(System.currentTimeMillis());
-                Product product = new Product(productId, name, name + " description", price, quantity, seller.getId());
+                Product product = new Product(productId, name, description, price, quantity, seller.getId());
                 seller.addProduct(product);
 
                 // Save the updated data to products.json
@@ -95,6 +105,7 @@ public class SellerView extends JFrame {
                 updateInventoryDisplay();
 
                 productNameField.setText("");
+                productDescriptionField.setText(""); // Clear the description field
                 productPriceField.setText("");
                 productQuantityField.setText("");
 
@@ -112,6 +123,9 @@ public class SellerView extends JFrame {
                     financialData.getCosts(), financialData.getRevenues(), financialData.getProfits());
             JOptionPane.showMessageDialog(this, message, "Financial Data", JOptionPane.INFORMATION_MESSAGE);
         });
+
+        // Initial inventory display
+        updateInventoryDisplay();
     }
 
     /**
@@ -121,8 +135,11 @@ public class SellerView extends JFrame {
         List<Product> products = seller.getInventory().getProducts();
         inventoryDisplay.setText("");
         for (Product product : products) {
-            inventoryDisplay.append(product.getName() + " - $" + product.getPrice() +
-                    " (Stock: " + product.getQuantity() + ")\n");
+            inventoryDisplay.append("Name: " + product.getName() + "\n");
+            inventoryDisplay.append("Description: " + product.getDescription() + "\n");
+            inventoryDisplay.append("Price: $" + product.getPrice() + "\n");
+            inventoryDisplay.append("Stock: " + product.getQuantity() + "\n");
+            inventoryDisplay.append("-----------------------------------\n");
         }
     }
 
@@ -133,6 +150,15 @@ public class SellerView extends JFrame {
      */
     public String getProductName() {
         return productNameField.getText();
+    }
+
+    /**
+     * Retrieves the product description entered by the seller.
+     *
+     * @return the entered product description.
+     */
+    public String getProductDescription() {
+        return productDescriptionField.getText();
     }
 
     /**
