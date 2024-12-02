@@ -47,6 +47,15 @@ public class Database {
     }
 
     /**
+     * Sets the Singleton instance of the Database.
+     *
+     * @param database the Database instance to set.
+     */
+    public static void setInstance(Database database) {
+        instance = database;
+    }
+
+    /**
      * Loads users and products from JSON files into memory.
      */
     public void loadData() {

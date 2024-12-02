@@ -99,8 +99,7 @@ public class Seller extends User implements Serializable {
      */
     public void recordSale(Product product, int quantity) {
         double saleAmount = product.getPrice() * quantity;
-        double costAmount = 0.0;
-        financialData.updateData(saleAmount, costAmount);
+        financialData.updateData(saleAmount, 0.0);
     }
 
     /**
