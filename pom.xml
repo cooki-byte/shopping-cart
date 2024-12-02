@@ -47,6 +47,20 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.0</version>
       </plugin>
+              <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.4.1</version> <!-- Use the latest stable version -->
+            <configuration>
+                <!-- Optional configurations can be added here -->
+                <source>17</source> <!-- Specify Java version -->
+                <encoding>UTF-8</encoding>
+                <docencoding>UTF-8</docencoding>
+                <charset>UTF-8</charset>
+                <additionalJOption>-Xdoclint:none</additionalJOption> <!-- Suppress warnings -->
+                <failOnError>false</failOnError> <!-- Continue build even if Javadoc errors occur -->
+            </configuration>
+        </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.0.2</version>
