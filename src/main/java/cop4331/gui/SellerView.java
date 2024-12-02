@@ -210,7 +210,7 @@ public class SellerView extends JFrame {
             }
 
             // Ask for the bundle description
-            String bundleDescription = JOptionPane.showInputDialog(this, "Enter Bundle Name:");
+            String bundleDescription = JOptionPane.showInputDialog(this, "Enter Bundle Description:");
             if (bundleDescription == null || bundleDescription.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Bundle description cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
