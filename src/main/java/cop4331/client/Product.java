@@ -1,7 +1,16 @@
 package cop4331.client;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+
 import java.io.Serializable;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "productType")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Product.class, name = "product"),
+    @JsonSubTypes.Type(value = ProductBundle.class, name = "bundle"),
+    @JsonSubTypes.Type(value = DiscountedProduct.class, name = "discountedProduct")
+})
 /**
  * Represents a product in the system, including its details such as ID, name, description, price, and quantity.
  */
@@ -27,6 +36,8 @@ public class Product implements Serializable {
     /** The invoice price of the product. */
     private double invoicePrice;
 
+    private String type;
+
     /**
      * Default constructor for creating an empty product.
      */
@@ -43,7 +54,7 @@ public class Product implements Serializable {
      * @param sellerId sellerId the unique identifier of the seller of the product.
      * @param invoicePrice the invoice price of the product.
      */
-    public Product(String id, String name, String description, double price, int quantity, String sellerId, double invoicePrice) {
+    public Product(String id, String name, String description, double price, int quantity, String sellerId, double invoicePrice, String type) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -51,6 +62,7 @@ public class Product implements Serializable {
         this.quantity = quantity;
         this.sellerId = sellerId;
         this.invoicePrice = invoicePrice;
+        this.type = type;
     }
 
     /**
@@ -78,6 +90,24 @@ public class Product implements Serializable {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Retrieves the type of the product.
+     *
+     * @return the type of the product.
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of the product.
+     *
+     * @param type the type of the product.
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
