@@ -5,7 +5,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 
 import java.io.Serializable;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "productType")
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY, // Change from PROPERTY to EXISTING_PROPERTY
+    property = "type",
+    visible = true // Ensures the 'type' property is available to the class
+)
 @JsonSubTypes({
     @JsonSubTypes.Type(value = Product.class, name = "product"),
     @JsonSubTypes.Type(value = ProductBundle.class, name = "bundle"),
@@ -36,7 +41,7 @@ public class Product implements Serializable {
     /** The invoice price of the product. */
     private double invoicePrice;
 
-    private String productType;
+    private String type;
 
     /**
      * Default constructor for creating an empty product.
@@ -54,7 +59,7 @@ public class Product implements Serializable {
      * @param sellerId sellerId the unique identifier of the seller of the product.
      * @param invoicePrice the invoice price of the product.
      */
-    public Product(String id, String name, String description, double price, int quantity, String sellerId, double invoicePrice, String productType) {
+    public Product(String id, String name, String description, double price, int quantity, String sellerId, double invoicePrice, String type) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -62,7 +67,7 @@ public class Product implements Serializable {
         this.quantity = quantity;
         this.sellerId = sellerId;
         this.invoicePrice = invoicePrice;
-        this.productType = productType;
+        this.type = type;
     }
 
     /**
@@ -97,8 +102,8 @@ public class Product implements Serializable {
      *
      * @return the type of the product.
      */
-    public String getProductType() {
-        return productType;
+    public String getType() {
+        return type;
     }
 
     /**
@@ -106,8 +111,8 @@ public class Product implements Serializable {
      *
      * @param type the type of the product.
      */
-    public void setProductType(String productType) {
-        this.productType = productType;
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
