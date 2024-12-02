@@ -7,11 +7,9 @@ import cop4331.client.Database;
 import cop4331.client.DiscountedProduct;
 import cop4331.client.ProductBundle;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
 
 /**
  * GUI class representing the seller view in the system.
@@ -51,36 +49,95 @@ public class SellerView extends JFrame {
         add(inventoryScroll, BorderLayout.CENTER);
 
         // Bottom Panel
-        JPanel bottomPanel = new JPanel(new GridLayout(5, 2, 5, 5)); // Changed to 5 rows
-        bottomPanel.add(new JLabel("Product Name:"));
-        productNameField = new JTextField();
-        bottomPanel.add(productNameField);
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS)); // Vertical alignment
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding
 
-        bottomPanel.add(new JLabel("Description:")); // Added description label
-        productDescriptionField = new JTextField();   // Added description field
-        bottomPanel.add(productDescriptionField);
+        // Input Fields Panel
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Add New Product"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5,5,5,5); // Spacing between components
+        gbc.anchor = GridBagConstraints.WEST;
 
-        bottomPanel.add(new JLabel("Price:"));
-        productPriceField = new JTextField();
-        bottomPanel.add(productPriceField);
+        // Row 1: Product Name
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputPanel.add(new JLabel("Product Name:"), gbc);
 
-        bottomPanel.add(new JLabel("Quantity:"));
-        productQuantityField = new JTextField();
-        bottomPanel.add(productQuantityField);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        productNameField = new JTextField(20);
+        inputPanel.add(productNameField, gbc);
 
-        bottomPanel.add(new JLabel("Invoice Price:")); 
-        productInvoicePriceField = new JTextField();  
-        bottomPanel.add(productInvoicePriceField);
+        // Row 2: Description
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        inputPanel.add(new JLabel("Description:"), gbc);
 
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        productDescriptionField = new JTextField(20);
+        inputPanel.add(productDescriptionField, gbc);
+
+        // Row 3: Price
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        inputPanel.add(new JLabel("Price:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        productPriceField = new JTextField(20);
+        inputPanel.add(productPriceField, gbc);
+
+        // Row 4: Quantity
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        inputPanel.add(new JLabel("Quantity:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        productQuantityField = new JTextField(20);
+        inputPanel.add(productQuantityField, gbc);
+
+        // Row 5: Invoice Price
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        inputPanel.add(new JLabel("Invoice Price:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        productInvoicePriceField = new JTextField(20);
+        inputPanel.add(productInvoicePriceField, gbc);
+
+        bottomPanel.add(inputPanel);
+
+        // Buttons Panel
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         addProductButton = new JButton("Add Product");
         viewFinancialButton = new JButton("View Financial Data");
-        bottomPanel.add(addProductButton);
-        bottomPanel.add(viewFinancialButton);
-
         createBundleButton = new JButton("Create Bundle");
         applyDiscountButton = new JButton("Apply Discount");
-        bottomPanel.add(createBundleButton);
-        bottomPanel.add(applyDiscountButton);
+
+        buttonsPanel.add(addProductButton);
+        buttonsPanel.add(viewFinancialButton);
+        buttonsPanel.add(createBundleButton);
+        buttonsPanel.add(applyDiscountButton);
+
+        bottomPanel.add(buttonsPanel);
 
         add(bottomPanel, BorderLayout.SOUTH);
 
@@ -125,6 +182,7 @@ public class SellerView extends JFrame {
 
                 updateInventoryDisplay();
 
+                // Clear input fields
                 productNameField.setText("");
                 productDescriptionField.setText(""); 
                 productPriceField.setText("");
