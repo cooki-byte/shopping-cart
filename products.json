@@ -1,1 +1,20 @@
-[{"id":"1","name":"Laptop","description":"A high-performance laptop","price":999.99,"quantity":7,"sellerId":null,"invoicePrice":0.0},{"id":"2","name":"Mouse","description":"A wireless mouse","price":29.99,"quantity":35,"sellerId":null,"invoicePrice":0.0},{"id":"1733092714905","name":"book","description":"book desc","price":20.0,"quantity":3,"sellerId":"sell1","invoicePrice":15.0}]
+[
+  {
+    "id": "1",
+    "name": "Laptop",
+    "description": "A high-performance laptop",
+    "price": 999.99,
+    "quantity": 10,
+    "sellerId": "sell1",
+    "productType": "product"
+  },
+  {
+    "id": "2",
+    "name": "Mouse",
+    "description": "A wireless mouse",
+    "price": 29.99,
+    "quantity": 50,
+    "sellerId": "sell1",
+    "productType": "product"
+  }
+]

@@ -1,1 +1,20 @@
-[{"id":"cust1","username":"customer","password":"password","type":"customer","cart":{"items":[],"total":0.0,"empty":true}},{"id":"sell1","username":"seller","password":"password","type":"seller","inventory":{"products":[{"id":"1733092714905","name":"book","description":"book desc","price":20.0,"quantity":3,"sellerId":"sell1","invoicePrice":15.0}]},"financialData":{"costs":75.0,"revenues":40.0,"profits":-35.0}}]
+[
+  {
+    "type": "customer",
+    "id": "cust1",
+    "username": "customer",
+    "password": "password",
+    "cart": {
+      "items": []
+    }
+  },
+  {
+    "type": "seller",
+    "id": "sell1",
+    "username": "seller",
+    "password": "password",
+    "inventory": {
+      "products": []
+    }
+  }
+]

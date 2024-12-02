@@ -36,7 +36,7 @@ public class Product implements Serializable {
     /** The invoice price of the product. */
     private double invoicePrice;
 
-    private String type;
+    private String productType;
 
     /**
      * Default constructor for creating an empty product.
@@ -54,7 +54,7 @@ public class Product implements Serializable {
      * @param sellerId sellerId the unique identifier of the seller of the product.
      * @param invoicePrice the invoice price of the product.
      */
-    public Product(String id, String name, String description, double price, int quantity, String sellerId, double invoicePrice, String type) {
+    public Product(String id, String name, String description, double price, int quantity, String sellerId, double invoicePrice, String productType) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -62,7 +62,7 @@ public class Product implements Serializable {
         this.quantity = quantity;
         this.sellerId = sellerId;
         this.invoicePrice = invoicePrice;
-        this.type = type;
+        this.productType = productType;
     }
 
     /**
@@ -97,8 +97,8 @@ public class Product implements Serializable {
      *
      * @return the type of the product.
      */
-    public String getType() {
-        return type;
+    public String getProductType() {
+        return productType;
     }
 
     /**
@@ -106,8 +106,8 @@ public class Product implements Serializable {
      *
      * @param type the type of the product.
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setProductType(String productType) {
+        this.productType = productType;
     }
 
     /**
